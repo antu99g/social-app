@@ -14,33 +14,34 @@ const Page404 = () => {
 const PrivateRoute = ({children}) => {
   const auth = useAuth();
 
-  if(auth.user){
-	  return children;
-  }
+   if (auth.user) {
+   	return children;
+   }
 
   return <Navigate to="/login" />;
-	// return (
-	// 	<Route 
-	// 		{...rest}
-	// 		element={() => 
-	// 			auth.user
-	// 			? children
-	// 			: <Navigate to='/login' />
-	// 		}
-	// 	/>
-	// );
-}
+  // return (
+  // 	<Route
+  // 		{...rest}
+  // 		element={() =>
+  // 			auth.user
+  // 			? children
+  // 			: <Navigate to='/login' />
+  // 		}
+  // 	/>
+  // );
+};
 
 
 const SecureLogin = ({children}) => {
   const auth = useAuth();
+  console.log('private route', children);
 
-  if(auth.user){
-    return <Navigate to='/' />
+  if (auth.user) {
+    return <Navigate to="/" />;
   }
 
-  return {children};
-}
+  return  children;
+};
 
 
 
@@ -69,7 +70,7 @@ function App() {
 
         <Route path="/settings" exact element={<PrivateRoute><Settings /></PrivateRoute>} />
         
-        <Route path="/user/:userid" exact element={<PrivateRoute><UserProfile /></PrivateRoute>} />
+        <Route path="/user/:userid" exact element={<UserProfile />} />
 
         <Route path="*" element={<Page404 />} />
       </Routes>
