@@ -20,29 +20,29 @@ export const useProvideAuth = () => {
    const [user, setUser] = useState(null);
    const [loading, setLoading] = useState(true);
  
+   const getUser = async () => {
+     const userToken = getItemFromLocalStorage(LOCALSTORAGE_TOKEN_KEY);
+
+     if (userToken) {
+       const user = jwt(userToken);
+       const response = await fetchFriends();
+
+       let friends = [];
+       if (response.success) {
+         friends = response.data.friends;
+       }
+
+       setUser({
+         ...user,
+         friends,
+       });
+     }
+
+     setLoading(false);
+   };
 
    useEffect(() => {
-      const getUser = async () => {
-         const userToken = getItemFromLocalStorage(LOCALSTORAGE_TOKEN_KEY);
-   
-         if(userToken){
-            const user = jwt(userToken);
-            const response = await fetchFriends();
-
-            let friends = [];
-            if(response.success){
-              friends = response.data.friends;
-            }
-
-            setUser({
-               ...user,
-               friends
-            });           
-         }  
-          
-         setLoading(false);
-      }
-
+      // console.log('useEffect ran from Auth');
       getUser();
    }, []);
 
@@ -77,11 +77,12 @@ export const useProvideAuth = () => {
       console.log('login user', response.data.user);
 
       if(response.success){
-        setUser(response.data.user);
+      //   setUser(response.data.user);         
         setItemInLocalStorage(
           LOCALSTORAGE_TOKEN_KEY,
           response.data.token ? response.data.token : null
         );
+        getUser();
         return { success: true };
       }else{
          return {
@@ -108,8 +109,8 @@ export const useProvideAuth = () => {
  
    const logout = () => {
       console.log('logout ran in hooks');
-      setUser(null);      
       removeItemFromLocalStorage(LOCALSTORAGE_TOKEN_KEY);
+      setUser(null);
    };
 
 
